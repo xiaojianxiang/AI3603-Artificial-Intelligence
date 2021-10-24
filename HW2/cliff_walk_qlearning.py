@@ -16,6 +16,8 @@ env = CliffWalk()
 # get the size of action space 
 num_actions = env.action_space.n
 all_actions = np.arange(num_actions)
+# get the size of observation space 
+num_observations = env.observation_space.n
 # set random seed and make the result reproducible
 RANDOM_SEED = 0
 env.seed(RANDOM_SEED)
@@ -25,10 +27,12 @@ np.random.seed(RANDOM_SEED)
 ##### START CODING HERE #####
 
 # construct the intelligent agent.
-agent = QLearningAgent(all_actions)
+agent = QLearningAgent(num_observations, num_actions, all_actions)
+
+agent.restore('/Users/xiaojian_xiang/Projects/AI3606/HW2/QLearning/Q_Table_QL.npy')
 
 # start training
-for episode in range(1000):
+for episode in range(20, 1000):
     # record the reward in an episode
     episode_reward = 0
     # reset env
@@ -45,12 +49,13 @@ for episode in range(1000):
         episode_reward += r
         print(f"{s} {a} {s_} {r} {isdone}")
         # agent learns from experience
-        agent.learn()
+        agent.learn(s, a, r, s_, isdone)
         s = s_
         if isdone:
             time.sleep(0.5)
             break
     print('episode:', episode, 'episode_reward:', episode_reward, 'epsilon:', agent.epsilon)  
+    agent.save('/Users/xiaojian_xiang/Projects/AI3606/HW2/QLearning/Q_Table_QL.npy')
 print('\ntraining over\n')   
 
 # close the render window after training.
