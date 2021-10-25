@@ -75,6 +75,9 @@ class SarsaAgent(object):
     def set_epsilon(self, epsilon = 0.1):
         self.epsilon = epsilon
 
+    def set_learning_rate(self, learning_rate):
+        self.lr = learning_rate
+    
     def your_function(self, params):
         """You can add other functions as you wish."""
         do_something = True
