@@ -46,7 +46,7 @@ class SarsaAgent(object):
 """TODO: Implement your Q-Learning agent here"""
 class QLearningAgent(object):
     ##### START CODING HERE #####
-    def __init__(self, num_observations, num_actions, all_actions, learning_rate = 0.01, gamma = 0.9, epsilon = 0.1):
+    def __init__(self, num_observations, num_actions, all_actions, learning_rate = 0.05, gamma = 0.9, epsilon = 1):
         """initialize the agent. Maybe more function inputs are needed."""
         self.all_actions = all_actions
         self.lr = learning_rate
@@ -69,7 +69,7 @@ class QLearningAgent(object):
             learn from experience
             update the Q-table
         """
-        time.sleep(0.5)
+        # time.sleep(0.5)
 
         predict_Q = self.Q[observation, action]
         if done:
@@ -99,6 +99,9 @@ class QLearningAgent(object):
         self.Q = np.load(npy_file)
         print(npy_file + ' loaded.')
     
+    def set_epsilon(self, epsilon = 0.1):
+        self.epsilon = epsilon
+
     def your_function(self, params):
         """You can add other functions as you wish."""
         do_something = True

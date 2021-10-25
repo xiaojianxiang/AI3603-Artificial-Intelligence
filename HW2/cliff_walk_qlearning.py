@@ -29,10 +29,15 @@ np.random.seed(RANDOM_SEED)
 # construct the intelligent agent.
 agent = QLearningAgent(num_observations, num_actions, all_actions)
 
-agent.restore('/Users/xiaojian_xiang/Projects/AI3606/HW2/QLearning/Q_Table_QL.npy')
+# agent.restore('/Users/xiaojian_xiang/Projects/AI3606/HW2/QLearning/Q_Table_QL.npy')
+
+# The scope of the episode reward
+episode_rewards = []
+episode_epsilons = []
+epsilon = 1.0
 
 # start training
-for episode in range(20, 1000):
+for episode in range(1000):
     # record the reward in an episode
     episode_reward = 0
     # reset env
@@ -40,6 +45,9 @@ for episode in range(20, 1000):
     # render env. You can comment all render() to turn off the GUI to accelerate training.
     env.render()
     # agent interacts with the environment
+    episode_epsilons.append(epsilon)
+    agent.set_epsilon(epsilon)
+    # Set epsilon = epsilon(k-1) * 0.95
     for iter in range(500):
         # choose an action
         a = agent.choose_action(s)
@@ -52,10 +60,31 @@ for episode in range(20, 1000):
         agent.learn(s, a, r, s_, isdone)
         s = s_
         if isdone:
-            time.sleep(0.5)
+            # time.sleep(0.5)
             break
-    print('episode:', episode, 'episode_reward:', episode_reward, 'epsilon:', agent.epsilon)  
+    print('episode:', episode, 'episode_reward:', episode_reward, 'epsilon:', agent.epsilon)
+    episode_rewards.append(episode_reward)
+    epsilon = epsilon * 0.95
     agent.save('/Users/xiaojian_xiang/Projects/AI3606/HW2/QLearning/Q_Table_QL.npy')
+
+# Save the episode reward
+np.save('/Users/xiaojian_xiang/Projects/AI3606/HW2/QLearning/reward.npy', episode_rewards)
+# Save the episode epsilon
+np.save('/Users/xiaojian_xiang/Projects/AI3606/HW2/QLearning/epsilon.npy', episode_epsilons)
+
+import matplotlib.pyplot as plt
+plt.figure(1)
+plt.plot(episode_rewards)
+plt.xlabel('Episode')
+plt.ylabel('Episode Rewards')
+plt.show()
+
+plt.figure(2)
+plt.plot(episode_epsilons)
+plt.xlabel('Episode')
+plt.ylabel('Episode Epsilons')
+plt.show()
+
 print('\ntraining over\n')   
 
 # close the render window after training.
