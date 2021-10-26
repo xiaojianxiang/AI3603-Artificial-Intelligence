@@ -248,20 +248,63 @@ class DynaQAgent(object):
 ##### START CODING HERE #####
 class RLAgentWithOtherExploration(object):
     """initialize the agent"""
-    def __init__(self, all_actions):
+    ##### START CODING HERE #####
+    def __init__(self, num_observations, num_actions, all_actions, learning_rate = 0.05, gamma = 0.9, C = 1):
+        """initialize the agent. Maybe more function inputs are needed."""
         self.all_actions = all_actions
-        self.epsilon = 1.0
+        self.lr = learning_rate
+        self.C = C
+        self.gamma = gamma
+        self.num_observations = num_observations
+        self.num_actions = num_actions
+        self.Q = np.zeros((num_observations, num_actions))
 
     def choose_action(self, observation):
-        """choose action with other exploration algorithms."""
-        action = np.random.choice(self.all_actions)
-        return action
+        """choose action with  algorithm."""
+        Q_Table_star = self.Q[observation, :]
+        if np.count_nonzero(Q_Table_star) == 0:
+            action_chosen = np.random.choice(self.all_actions)
+        else:
+            action_chosen = np.argmax(Q_Table_star)
+        return action_chosen
     
-    def learn(self):
-        """learn from experience"""
-        time.sleep(0.5)
+    def learn(self, observation, action, reward, observation_, steps, numbers_of_actions, done):
+        """
+            learn from experience
+            update the Q-table
+        """
+        # time.sleep(0.5)
+
+        predict_Q = self.Q[observation, action]
+        if done:
+            target_Q = reward
+        else:
+            delta_inv = 0
+            if numbers_of_actions[action] > 0:
+                delta_inv = self.C * math.sqrt(3 / 2 * math.log(steps + 1) / numbers_of_actions[action]) 
+            target_Q = reward + np.max(self.Q[observation_, :]) + delta_inv
+        self.Q[observation, action] = self.lr * (target_Q - predict_Q)
+
         print("[INFO] The learning process complete. (ﾉ｀⊿´)ﾉ")
         return True
+    
+    def save(self, npy_file = './Q_Table_QL.npy'):
+        '''Save the learning process'''
+        np.save(npy_file, self.Q)
+        print(npy_file + ' saved.')
+
+    def restore(self, npy_file='./Q_Table_QL.npy'):
+        '''Load the learning process'''
+        self.Q = np.load(npy_file)
+        print(npy_file + ' loaded.')
+    
+    def set_C(self, C = 1):
+        self.C = C
+
+    def your_function(self, params):
+        """You can add other functions as you wish."""
+        do_something = True
+        return None
 ##### END CODING HERE #####
 
 # ------------------------------------------------------------------------------------------- #

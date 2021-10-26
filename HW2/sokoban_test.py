@@ -27,7 +27,7 @@ random.seed(RANDOM_SEED)
 np.random.seed(RANDOM_SEED) 
 
 agent = QLearningAgent(num_observations, num_actions, all_actions)
-Q_QL = np.load('/Users/xiaojian_xiang/Projects/AI3606/HW2/T2_SA/Q_Table_zero.npy')
+Q_QL = np.load('/Users/xiaojian_xiang/Projects/AI3606/HW2/T2_UCB/Q_Table_zero.npy')
 
 def obs_to_state(list):
     key = list[0] + list[1] * 10 + list[2] * 100 + list[3] * 1000 + list[4] * 10000 + list[5] * 100000
